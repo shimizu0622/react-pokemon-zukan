@@ -1,18 +1,25 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import App from './App';
-import './index.css';
+import { Routes, Route } from 'react-router-dom';
+import PokemonList from './pages/PokemonList';
+import PokemonDetail from './pages/PokemonDetail';
+import Header from './components/Header';
+import Navigation from './components/Navigation';
+import Footer from './components/Footer';
 
-const queryClient = new QueryClient();
+const App: React.FC = () => {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <Navigation />
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={<PokemonList />} />
+          <Route path="/pokemon/:id" element={<PokemonDetail />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+};
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <App />
-      </BrowserRouter>
-    </QueryClientProvider>
-  </React.StrictMode>
-);
+export default App;
