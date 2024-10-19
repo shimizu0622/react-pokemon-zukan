@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+// src/pages/PokemonList.tsx
+import React, { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { apiQueryKeys } from '../queryKeys';
 import { fetchPokemonListWithJapaneseNames, PokemonWithJapaneseName } from '../api/pokemonWithJapaneseName';
@@ -7,8 +8,6 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 const PokemonList: React.FC = () => {
-  const [allPokemon, setAllPokemon] = useState<PokemonWithJapaneseName[]>([]);
-
   const {
     data,
     fetchNextPage,
@@ -27,13 +26,6 @@ const PokemonList: React.FC = () => {
       return undefined;
     },
   });
-
-  useEffect(() => {
-    if (data) {
-      const newPokemon = data.pages.flatMap(page => page.results);
-      setAllPokemon(newPokemon);
-    }
-  }, [data]);
 
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
@@ -60,9 +52,11 @@ const PokemonList: React.FC = () => {
   return (
     <div className="p-4">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {allPokemon.map((pokemon) => (
-          <PokemonCard key={pokemon.name} pokemon={pokemon} />
-        ))}
+        {data?.pages.map((page) =>
+          page.results.map((pokemon: PokemonWithJapaneseName) => (
+            <PokemonCard key={pokemon.name} pokemon={pokemon} />
+          ))
+        )}
       </div>
       <div ref={loadMoreRef} className="h-20 flex items-center justify-center">
         {isFetchingNextPage ? <Loader /> : hasNextPage ? '続きを読み込む' : ''}
